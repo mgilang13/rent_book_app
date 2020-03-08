@@ -137,7 +137,7 @@ module.exports = {
   sortBookByTitle: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY title;",
+        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY title;",
         (err, result) => {
           if (!err) {
             resolve(result);

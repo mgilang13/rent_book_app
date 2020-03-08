@@ -166,6 +166,11 @@ module.exports = {
     book
       .searchBook(keyword)
       .then(result => {
+        for (i = 0; i < result.length; i++) {
+          result[i].date_released = result[i].date_released
+            .toGMTString()
+            .slice(0, 16);
+        }
         response.response(res, result, 200, null);
       })
       .catch(err => {
@@ -177,6 +182,11 @@ module.exports = {
     book
       .sortBookByTitle()
       .then(result => {
+        for (i = 0; i < result.length; i++) {
+          result[i].date_released = result[i].date_released
+            .toGMTString()
+            .slice(0, 16);
+        }
         response.response(res, result, 200, null);
       })
       .catch(error => {
@@ -188,6 +198,11 @@ module.exports = {
     book
       .sortBookByDate()
       .then(result => {
+        for (i = 0; i < result.length; i++) {
+          result[i].date_released = result[i].date_released
+            .toGMTString()
+            .slice(0, 16);
+        }
         response.response(res, result, 200, null);
       })
       .catch(error => {
@@ -199,6 +214,11 @@ module.exports = {
     book
       .sortBookByGenre()
       .then(result => {
+        for (i = 0; i < result.length; i++) {
+          result[i].date_released = result[i].date_released
+            .toGMTString()
+            .slice(0, 16);
+        }
         response.response(res, result, 200, null);
       })
       .catch(error => {
@@ -210,6 +230,11 @@ module.exports = {
     book
       .sortBookByAvailability()
       .then(result => {
+        for (i = 0; i < result.length; i++) {
+          result[i].date_released = result[i].date_released
+            .toGMTString()
+            .slice(0, 16);
+        }
         response.response(res, result, 200, null);
       })
       .catch(error => {
