@@ -1,8 +1,10 @@
 const express = require("express");
 const route = express.Router();
 const book = require("../controller/book");
+const auth = require("../helper/auth");
 
 route
+  .all("*", auth.authInfo)
   .get("/", book.getBook)
   .get("/searchBook", book.searchBook)
   .get("/sortBookByTitle", book.sortBookByTitle)
