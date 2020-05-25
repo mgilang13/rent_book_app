@@ -9,24 +9,35 @@ module.exports = {
     const passHash = response.setPass(req.body.password, salt);
     const data = {
       username: req.body.username,
+      fullname: req.body.fullname,
+      email: req.body.email,
       password: passHash.passHas,
       salt: passHash.salt
     };
-    admin
-      .register(data)
-      .then(result => {
-        response.response(res, result);
-      })
-      .catch(err => {
-        response.response(res, null, 401, "Sorry Something Wrong");
-      });
+
+    admin.checkAvailUser(data.username).then(i => {
+      console.log("i : ", i);
+      if (i.length !== 0) {
+        response.response(res, null, 400, "Username has exist");
+      } else if (i.length === 0) {
+        admin
+          .register(data)
+          .then(result => {
+            response.responseAuth(res, result, "You're registered!", 200, null);
+          })
+          .catch(err => {
+            console.log(err)
+            response.response(res, null, 401, "Sorry Something Wrong");
+          });
+      }
+    });
   },
   login: (req, res) => {
-    const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
     admin
-      .getByUserName(username)
+      .getByAdminEmail(email)
       .then(result => {
         const dataAdmin = result[0];
         const adminPass = response.setPass(password, dataAdmin.salt).passHas;
@@ -34,8 +45,8 @@ module.exports = {
         if (adminPass === dataAdmin.password) {
           dataAdmin.token = jwt.sign(
             {
-              username: dataAdmin.username,
-              id_admin: dataAdmin.id
+              email: dataAdmin.email,
+              id: dataAdmin.id
             },
             process.env.SECRET_KEY,
             {
@@ -55,7 +66,8 @@ module.exports = {
           );
         }
       })
-      .catch(() => {
+      .catch(error => {
+        console.log(error);
         return response.response(res, null, 404, "Username Not Register");
       });
   }

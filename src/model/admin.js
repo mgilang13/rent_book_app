@@ -1,8 +1,6 @@
 const connection = require("../config/db");
 module.exports = {
   register: data => {
-    console.log(data);
-
     return new Promise((resolve, reject) => {
       connection.query("INSERT INTO admin SET ?", data, (err, result) => {
         if (!err) {
@@ -13,10 +11,27 @@ module.exports = {
       });
     });
   },
-  getByUserName: username => {
+  getByAdminEmail: email => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT id, username, salt, password FROM admin WHERE username = ?",
+        "SELECT * FROM admin WHERE email = ?",
+        email,
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error(err));
+          }
+        }
+      );
+    });
+  },
+  checkAvailUser: username => {
+    console.log(username);
+
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT username FROM admin WHERE username = ?",
         username,
         (err, result) => {
           if (!err) {
@@ -27,5 +42,6 @@ module.exports = {
         }
       );
     });
+    // return 0;
   }
 };

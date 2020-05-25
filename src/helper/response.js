@@ -1,12 +1,12 @@
 const crypto = require("crypto");
 
 module.exports = {
-  response: (res, result, status, error) => {
+  response: (res, data, status, error) => {
     let resultPrint = {};
 
     resultPrint.error = error || null;
     resultPrint.status = status || 200;
-    resultPrint.result = result;
+    resultPrint.data = data;
 
     return res.status(resultPrint.status).json(resultPrint);
   },
@@ -17,6 +17,33 @@ module.exports = {
     resultPrint.message = message || "Success";
     resultPrint.pageDetail = pageDetail || {};
     resultPrint.data = data || {};
+
+    return res.status(resultPrint.status).json(resultPrint);
+  },
+  responseBook: (res, result, bookdetail, status, error) => {
+    let resultPrint = {};
+    resultPrint.error = error || null;
+    resultPrint.status = status || 200;
+    resultPrint.result = result;
+    resultPrint.bookdetail = bookdetail;
+
+    return res.status(resultPrint.status).json(resultPrint);
+  },
+  responseAuth: (res, result, message, status, error) => {
+    let resultPrint = {};
+    resultPrint.message = message;
+    resultPrint.error = error || null;
+    resultPrint.status = status || 200;
+    resultPrint.result = result;
+
+    return res.status(resultPrint.status).json(resultPrint);
+  },
+  responseAddBook: (res, result, error, status, message) => {
+    let resultPrint = {};
+    resultPrint.error = error || null;
+    resultPrint.status = status || 200;
+    resultPrint.result = result;
+    resultPrint.message = message;
 
     return res.status(resultPrint.status).json(resultPrint);
   },

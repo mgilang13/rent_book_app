@@ -9,17 +9,18 @@ module.exports = {
           if (!error) {
             resolve(result);
           } else {
+            console.log(error);
             reject(new Error(error));
           }
         }
       );
     });
   },
-  getAllBook: (offset, limit) => {
+  getAllBook: (search, offset, limit) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status as availability FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id LIMIT ?, ?;",
-        [offset, limit],
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id WHERE b.title LIKE CONCAT('%', ?, '%') ORDER BY b.title ASC LIMIT ?, ?;",
+        [search, offset, limit],
         (err, result) => {
           if (!err) {
             resolve(result);
@@ -30,12 +31,28 @@ module.exports = {
       );
     });
   },
-  addBook: data => {
+  showBookReturn: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        "SELECT b.*, date_format(b.date_released, '%W, %D %M %Y') as df, g.name FROM books AS b INNER JOIN genres AS g ON b.id_genre = g.id INNER JOIN availability AS a ON b.available = a.id WHERE b.available = 1",
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error(err));
+          }
+        }
+      );
+    });
+  },
+
+  addBook: (data) => {
     return new Promise((resolve, reject) => {
       connection.query("INSERT INTO books SET ?", data, (err, result) => {
         if (!err) {
           resolve(result);
         } else {
+          console.log(err);
           reject(new Error(err));
         }
       });
@@ -57,7 +74,23 @@ module.exports = {
       );
     });
   },
-  deleteBook: idbook => {
+  showBookById: (idBook) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        // "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id WHERE b.id = ?",
+        " SELECT *, date_format(b.date_released, '%W, %D %M %Y') as df FROM books AS b INNER JOIN genres AS g ON b.id_genre = g.id INNER JOIN availability AS a ON b.available = a.id WHERE b.id = ?",
+        idBook,
+        (err, result) => {
+          if (!err) {
+            resolve(result);
+          } else {
+            reject(new Error(err));
+          }
+        }
+      );
+    });
+  },
+  deleteBook: (idbook) => {
     console.log(idbook);
     return new Promise((resolve, reject) => {
       connection.query(
@@ -73,15 +106,13 @@ module.exports = {
       );
     });
   },
-  checkAvailabilityBook: idbook => {
-    console.log(idbook);
+  checkAvailabilityBook: (idbook) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT available FROM books WHERE id = ?",
+        "SELECT * FROM books WHERE id = ?",
         idbook,
         (err, result) => {
           resolve(result);
-          console.log("jjj", result);
         }
       );
     });
@@ -119,10 +150,10 @@ module.exports = {
       );
     });
   },
-  searchBook: keyword => {
+  searchBook: (keyword) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id AND title LIKE CONCAT('%',?,'%');",
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id WHERE b.title LIKE CONCAT('%', ?, '%')",
         keyword,
         (err, result) => {
           if (!err) {
@@ -137,10 +168,10 @@ module.exports = {
   sortBookByTitle: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY title;",
-        (err, result) => {
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id ORDER BY title;",
+        (err, data) => {
           if (!err) {
-            resolve(result);
+            resolve(data);
           } else {
             reject(new Error(err));
           }
@@ -152,7 +183,7 @@ module.exports = {
   sortBookByDate: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY date_released;",
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id ORDER BY date_released;",
         (err, result) => {
           if (!err) {
             resolve(result);
@@ -166,7 +197,7 @@ module.exports = {
   sortBookByGenre: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY genre;",
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id ORDER BY genre;",
         (err, result) => {
           if (!err) {
             resolve(result);
@@ -180,7 +211,7 @@ module.exports = {
   sortBookByAvailability: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT books.id, title, description, image_url, date_released, name as genre, status FROM books, genres, availability WHERE books.id_genre = genres.id AND books.available = availability.id ORDER BY status;",
+        "SELECT b.id, b.title, b.author, b.description, b.image_url, b.date_released, g.name as genre, a.status as availability FROM books as b INNER JOIN genres as g ON b.id_genre = g.id INNER JOIN availability as a ON b.available = a.id ORDER BY availability;",
         (err, result) => {
           if (!err) {
             resolve(result);
@@ -190,5 +221,5 @@ module.exports = {
         }
       );
     });
-  }
+  },
 };

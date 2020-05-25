@@ -4,7 +4,6 @@ const genre = require("../controller/genre");
 const auth = require("../helper/auth");
 
 route
-  .all("*", auth.authInfo)
   .get("/", genre.getGenre)
   .post("/addgenre", genre.addGenre)
   .patch("/:idgenre", genre.updateGenre)

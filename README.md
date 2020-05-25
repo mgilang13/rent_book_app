@@ -3,6 +3,60 @@
 **Deskripsi** : Aplikasi sederhana untuk melakukan aktivitas pinjam-meminjam buku <br>
 **Pembuat** : Muhammad Gilang Nur Khoiri, A.Md.
 
+## Requirement
+
+Node JS
+
+## Cara install
+
+1. Clone git `git clone https://github.com/mgilang13/rent_book_app.git`
+
+2. cd rent_book_app
+3. `npm install`
+4. Import Databaase dari folder db
+5. `npm start`
+
+## Book's Endpoints
+
+| No  | HTTP Method | URI                             | Operations                |
+| --- | ----------- | ------------------------------- | ------------------------- |
+| 1   | GET         | /api/v1/book/                   | Get All Books Data        |
+| 2   | GET         | /api/v1/book/bookDetail/:idbook | Get Book Data by ID       |
+| 3   | GET         | /api/v1/book/?page=1            | Get Book in first page    |
+| 4   | GET         | /api/v1/book/?search=book_title | Get Searched Book         |
+| 5   | GET         | /api/v1/book/sortBookByTitle    | Sort Book By Title        |
+| 6   | GET         | /api/v1/book/sortBookByDate     | Sort Book By Date         |
+| 7   | GET         | /api/v1/book/sortBookByGenre    | Sort Book By Genre        |
+| 8   | GET         | /api/v1/book/sortBookByAvail    | Sort Book By Availability |
+| 9   | GET         | /api/v1/book/getBookReturn      | Get Returned Book Data    |
+| 10  | POST        | /api/v1/book/addbook            | Post New Data Book        |
+| 11  | PATCH       | /api/v1/book/updateBook/:idbook | Update Book by ID         |
+| 12  | PATCH       | /api/v1/book/returnBook/:idbook | Return Book By ID         |
+| 13  | PATCH       | /api/v1/book/rentBook/:idbook   | Rent Book By ID           |
+| 14  | DELETE      | /api/v1/book/deleteBook/:idbook | Delete Book By ID         |
+
+## Genre's Endponts
+
+| No  | HTTP Method | URI                    | Operations              |
+| --- | ----------- | ---------------------- | ----------------------- |
+| 1   | GET         | /api/v1/genre/         | Get All Data Genres     |
+| 2   | POST        | /api/v1/genre/addgenre | Post New Data Genre     |
+| 3   | PATCH       | /api/v1/genre/:idgenre | Update Data Genre By ID |
+| 4   | DELETE      | /api/v1/genre/:idgenre | Delete Data Genre By ID |
+
+## Availability's Endpoint
+
+| No  | HTTP Method | URI                      | Operations         |
+| --- | ----------- | ------------------------ | ------------------ |
+| 1   | GET         | /api/v1/avail/availCheck | Check Availability |
+
+## Admin's Endpoints
+
+| No  | HTTP Method | URI                    | Operations        |
+| --- | ----------- | ---------------------- | ----------------- |
+| 1   | POST        | /api/v1/admin/register | Registeri An User |
+| 2   | POST        | /api/v1/admin/login    | Login An User     |
+
 ## Project Structure
 
 ```
